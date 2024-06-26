@@ -29,6 +29,19 @@ export default class OrderDetailController {
     }
   }
 
+  static async getByOrderId(req, res) {
+    try {
+      const OID = req.params.OID;
+      const mysql = "select * from order_detail where orders_id=?";
+      con.query(mysql, OID, function (err, result) {
+        if (err) return SendError(res, 400, EMessage.NotFound, err);
+        return SendSuccess(res, SMessage.selectAll, result);
+      });
+    } catch (error) {
+      return SendError(res, 500, EMessage.Server, error);
+    }
+  }
+
   static async insert(req, res) {
     try {
       const { orders_id, product_id, qty, total } = req.body;
@@ -46,13 +59,13 @@ export default class OrderDetailController {
         .toISOString()
         .replace(/T/, " ")
         .replace(/\..+/, "");
-      const checkTable = "Selece * from orders where OID=?";
+      const checkTable = "Select * from orders where OID=?";
       con.query(checkTable, orders_id, (err, result) => {
         if (err) return SendError(res, 404, EMessage.NotFound + " order");
         if (!result[0])
           return SendError(res, 404, EMessage.NotFound + " order");
         const mysql =
-          "insert into orders (orders_id, product_id,qty,total,createdAt,updatedAt) values (?,?,?,?,?)";
+          "insert into order_detail (orders_id, product_id,qty,total,createdAt,updatedAt) values (?,?,?,?,?,?)";
         con.query(
           mysql,
           [orders_id, product_id, qty, total, dateTime, dateTime],

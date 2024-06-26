@@ -117,16 +117,58 @@ export default class UserController {
       return SendError(res, 500, "ErrorServer Internal", error);
     }
   }
+
+  static async InsertUser(req, res) {
+    try {
+      const { username, password, role } = req.body;
+      const validate = await ValidateData({ username, password, role });
+      if (validate.length > 0) {
+        return SendError(res, 400, "Please input: " + validate.join(","));
+      }
+      if(Role[role] === undefined){
+        return SendError(res, 400, "Role not exist");
+      }
+      var datetime = new Date()
+        .toISOString()
+        .replace(/T/, " ") // replace T with a space
+        .replace(/\..+/, "");
+
+      const mysql = "Select * from user where username=?";
+      con.query(mysql, username, async function (err, result) {
+        if (err) throw err;
+        if (result.length > 0) {
+          return SendError(res, 400, "username is already!");
+        }
+        const genPassword = await GeneratePassword(password);
+        const insert =
+          "insert into user (username,password,role,createdAt,updatedAt) values (?,?,?,?,?)";
+        con.query(
+          insert,
+          [username, genPassword, role, datetime, datetime],
+          async function (error, data) {
+            if (error) throw error;
+            return SendCreate(res, SMessage.insert);
+          }
+        );
+      });
+    } catch (error) {
+      return SendError(res, 500, "ErrorServer Internal", error);
+    }
+  }
+
   static async UpdateUser(req, res) {
     try {
       const UID = req.params.UID;
       const mysql = "Select * from user where UID=?";
 
-      const { username } = req.body;
+      const { username, role } = req.body;
+      if(Role[role] === undefined){
+        return SendError(res, 400, "Role not exist");
+      }
       con.query(mysql, UID, function (err, result) {
         if (err) return SendError(res, 400, EMessage.NotFound + " user");
-        const update = "UPDATE user set username =? WHERE UID =?";
-        con.query(update, [username, UID], function (error, result) {
+        const update = "UPDATE user set username =?, role=? WHERE UID =?";
+        con.query(update, [username, role, UID], function (error, result) {
           if (error) return SendError(res, 400, "Faild Update User", error);
           return SendSuccess(res, SMessage.updated);
         });

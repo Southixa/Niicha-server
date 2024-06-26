@@ -77,12 +77,12 @@ export default class ProductTypeController {
   }
   static async deleteProductType(req, res) {
     try {
-      const productId = req.params.productId;
+      const PTID = req.params.PTID;
       const check = "select * from product_type where PTID=?";
       const deletes = "Delete from product_type where PTID=?";
-      con.query(check, productId, (err) => {
+      con.query(check, PTID, (err) => {
         if (err) return SendError(res, 404, EMessage.NotFound, err);
-        con.query(deletes, productId, (error) => {
+        con.query(deletes, PTID, (error) => {
           if (error) return SendError(res, 400, EMessage.ErrorDelete, error);
           return SendSuccess(res, SMessage.updated);
         });

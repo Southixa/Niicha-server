@@ -1,12 +1,23 @@
 import mysql from "mysql";
 
+// const con = mysql.createConnection({
+//   host: "mysql-176208-0.cloudclusters.net",
+//   port: "19894",
+//   user: "admin",
+//   password: "aviT3RQD",
+//   database: "NiichaDB",
+//   timezone: 'z'
+// });
+
 const con = mysql.createConnection({
-  host: "mysql-176208-0.cloudclusters.net",
-  port: "19894",
+  host: "mysql-176478-0.cloudclusters.net",
+  port: "10114",
   user: "admin",
-  password: "aviT3RQD",
+  password: "GkrsCq81",
   database: "NiichaDB",
+  timezone: 'z'
 });
+
 // Function to handle connection
 const connectToDatabase = () => {
   con.connect((err) => {

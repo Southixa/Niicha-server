@@ -18,9 +18,9 @@ export default class ProductController {
   }
   static async getOne(req, res) {
     try {
-      const productId = req.params.productId;
+      const PID = req.params.PID;
       const mysql = "select * from product where PID=?";
-      con.query(mysql, productId, function (err, result) {
+      con.query(mysql, PID, function (err, result) {
         if (err) return SendError(res, 400, EMessage.NotFound, err);
         return SendSuccess(res, SMessage.selectOne, result[0]);
       });
@@ -28,6 +28,23 @@ export default class ProductController {
       return SendError(res, 500, EMessage.Server, error);
     }
   }
+
+  static async searchProduct(req, res) {
+    try {
+      // const page = parseInt(`${req.query.page}`);
+      const { search } = req.query;
+      console.log(search);
+      // const offset = page && page > 0 ? page - 1 : 0;
+      const searchProduct = `select * from product where name LIKE '%${search}%'`;
+      con.query(searchProduct, function (err, result) {
+        if (err) return SendError(res, EMessage.NotFound, err);
+        return SendSuccess(res, SMessage.selectAll, result);
+      })
+    } catch (error) {
+      return SendError(res, 500, EMessage.Server, error);
+    }
+  }
+  
   static async insert(req, res) {
     try {
       const { product_type, name, detail, price } = req.body;
@@ -107,12 +124,12 @@ export default class ProductController {
   }
   static async deleteProduct(req, res) {
     try {
-      const productId = req.params.productId;
+      const PID = req.params.PID;
       const check = "select * from product where PID=?";
       const deletes = "Delete from product where PID=?";
-      con.query(check, productId, (err) => {
+      con.query(check, PID, (err) => {
         if (err) return SendError(res, 404, EMessage.NotFound, err);
-        con.query(deletes, productId, (error) => {
+        con.query(deletes, PID, (error) => {
           if (error) return SendError(res, 400, EMessage.ErrorDelete, error);
           return SendSuccess(res, SMessage.updated);
         });

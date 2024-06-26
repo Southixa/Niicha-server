@@ -6,7 +6,7 @@ import { ValidateData } from "../service/validate.js";
 export default class TableController {
   static async getAll(req, res) {
     try {
-      const table = "select * from table";
+      const table = "select * from tables";
       con.query(table, function (err, result) {
         if (err) return SendError(res, 400, EMessage.NotFound, err);
         return SendSuccess(res, SMessage.selectAll, result);
@@ -17,9 +17,9 @@ export default class TableController {
   }
   static async getOne(req, res) {
     try {
-      const tableId = req.params.tableId;
-      const mysql = "select * from table where TID=?";
-      con.query(mysql, tableId, function (err, result) {
+      const TID = req.params.TID;
+      const mysql = "select * from tables where TID=?";
+      con.query(mysql, TID, function (err, result) {
         if (err) return SendError(res, 400, EMessage.NotFound, err);
         return SendSuccess(res, SMessage.selectOne, result[0]);
       });
@@ -39,11 +39,12 @@ export default class TableController {
         .replace(/T/, " ")
         .replace(/\..+/, "");
       const insert =
-        "insert into table (noTable,url,seatAmount,createdAt,updatedAt) values (?,?,?,?,?)";
+        "insert into tables (noTable,url_web,seatAmount,createdAt,updatedAt) values (?,?,?,?,?)";
       con.query(
         insert,
         [noTable, url, seatAmount, dateTime, dateTime],
         (err) => {
+          if (err) console.log(err);
           if (err) return SendError(res, 400, EMessage.ErrorInsert, err);
           return SendSuccess(res, SMessage.Insert);
         }
@@ -64,10 +65,10 @@ export default class TableController {
         .toISOString()
         .replace(/T/, " ")
         .replace(/\..+/, "");
-      const mysql = "select * from table where TID=?";
+      const mysql = "select * from tables where TID=?";
       const update =
-        "update table set noTable=?,url=? ,seatAmount=?,updatedAt=? where TID=?";
-      con.query(mysql, tableId, function (err, result) {
+        "update tables set noTable=?,url_web=? ,seatAmount=?,updatedAt=? where TID=?";
+      con.query(mysql, TID, function (err, result) {
         if (err) return SendError(res, 404, EMessage.NotFound, err);
         if (!result[0]) return SendError(res, 404, EMessage.NotFound, err);
         con.query(
@@ -85,12 +86,13 @@ export default class TableController {
   }
   static async deleteTable(req, res) {
     try {
-      const TableId = req.params.TableId;
-      const check = "select * from Table where TID=?";
-      const deletes = "Delete from Table where TID=?";
-      con.query(check, TableId, (err) => {
+      const TID = req.params.TID;
+      const check = "SELECT * FROM tables WHERE TID = ?";
+      const deletes = "DELETE FROM tables WHERE TID = ?";
+      con.query(check, TID, (err) => {
+        if (err) console.log(err);
         if (err) return SendError(res, 404, EMessage.NotFound, err);
-        con.query(deletes, TableId, (error) => {
+        con.query(deletes, TID, (error) => {
           if (error) return SendError(res, 400, EMessage.ErrorDelete, error);
           return SendSuccess(res, SMessage.updated);
         });
