@@ -16,6 +16,21 @@ export default class OrderController {
       return SendError(res, 500, EMessage.Server, error);
     }
   }
+
+  static async getOneJoinDetail(req, res) {
+    try {
+      const OID = req.params.OID;
+      const order = "SELECT * FROM orders JOIN order_detail WHERE orders.OID = ?";
+      con.query(order, OID, function (err, result) {
+        if (err) return SendError(res, 400, EMessage.NotFound, err);
+        return SendSuccess(res, SMessage.selectAll, result);
+      });
+    } catch (error) {
+      return SendError(res, 500, EMessage.Server, error);
+    }
+  }
+
+
   static async getOne(req, res) {
     try {
       const OID = req.params.OID;

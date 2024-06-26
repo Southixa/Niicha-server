@@ -37,6 +37,7 @@ routes.delete("/tables/delete/:TID",TableController.deleteTable);
 // ======== orders =======
 routes.get("/order/getAll",OrderController.getAll);
 routes.get("/order/getOne/:OID",OrderController.getOne);
+routes.get("/order/getOneJoinDetail/:OID",OrderController.getOneJoinDetail);
 routes.post("/order/insert",OrderController.insert);
 routes.post("/order/insertNoTable", OrderController.insertNoTable);
 routes.post("/order/insertForSell",OrderController.insertForSell);
