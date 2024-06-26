@@ -61,9 +61,9 @@ export default class OrderController {
             dateTime,
             dateTime,
           ],
-          (err) => {
+          (err, result) => {
             if (err) return SendError(res, 404, EMessage.ErrorInsert, err);
-            return SendSuccess(res, SMessage.Insert);
+            return SendSuccess(res, SMessage.Insert, result.insertId);
           }
         );
       });
