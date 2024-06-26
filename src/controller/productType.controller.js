@@ -57,16 +57,16 @@ export default class ProductTypeController {
       con.query(checkProductType, PTID, (err) => {
         if (err) return SendError(res, 400, EMessage.ErrorUpdate, err);
         const update =
-          "update prduct_type set name=?,updatedAt=? Where PTID=?";
+          "update product_type set name=?,updatedAt=? Where PTID=?";
           var dateTime = new Date()
-          .toISOString()
-          .replace(/T/, " ")
-          .replace(/\..+/, "");
+        .toISOString()
+        .replace(/T/, " ")
+        .replace(/\..+/, "");
         con.query(
           update,
-          [ name, PTID,dateTime],
+          [ name, dateTime, PTID],
           (err) => {
-            if (err) return SendError(err, 400, EMessage.ErrorUpdate, err);
+            if (err) return SendError(res, 400, EMessage.ErrorUpdate, err);
             return SendSuccess(res, SMessage.updated);
           }
         );

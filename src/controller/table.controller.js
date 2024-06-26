@@ -29,8 +29,8 @@ export default class TableController {
   }
   static async insert(req, res) {
     try {
-      const { noTable, url, seatAmount } = req.body;
-      const validate = await ValidateData({ noTable, url, seatAmount });
+      const { noTable, url } = req.body;
+      const validate = await ValidateData({ noTable, url });
       if (validate.length > 0) {
         return SendError(res, 400, EMessage.PleaseInput + validate.join(","));
       }
@@ -39,10 +39,10 @@ export default class TableController {
         .replace(/T/, " ")
         .replace(/\..+/, "");
       const insert =
-        "insert into tables (noTable,url_web,seatAmount,createdAt,updatedAt) values (?,?,?,?,?)";
+        "insert into tables (noTable,url_web,createdAt,updatedAt) values (?,?,?,?)";
       con.query(
         insert,
-        [noTable, url, seatAmount, dateTime, dateTime],
+        [noTable, url, dateTime, dateTime],
         (err) => {
           if (err) console.log(err);
           if (err) return SendError(res, 400, EMessage.ErrorInsert, err);
@@ -56,8 +56,8 @@ export default class TableController {
   static async updateTable(req, res) {
     try {
       const TID = req.params.TID;
-      const { noTable, url, seatAmount } = req.body;
-      const validate = await ValidateData({ noTable, url, seatAmount });
+      const { noTable, url } = req.body;
+      const validate = await ValidateData({ noTable, url });
       if (validate.length > 0) {
         return SendError(res, 400, EMessage.PleaseInput + validate.join(","));
       }
@@ -67,13 +67,13 @@ export default class TableController {
         .replace(/\..+/, "");
       const mysql = "select * from tables where TID=?";
       const update =
-        "update tables set noTable=?,url_web=? ,seatAmount=?,updatedAt=? where TID=?";
+        "update tables set noTable=?,url_web=? ,updatedAt=? where TID=?";
       con.query(mysql, TID, function (err, result) {
         if (err) return SendError(res, 404, EMessage.NotFound, err);
         if (!result[0]) return SendError(res, 404, EMessage.NotFound, err);
         con.query(
           update,
-          [noTable, url, seatAmount, dateTime, TID],
+          [noTable, url, dateTime, TID],
           (error) => {
             if (error) return SendError(res, 400, EMessage.ErrorUpdate, error);
             return SendSuccess(res, SMessage.updated);
