@@ -20,7 +20,12 @@ export default class OrderController {
   static async getOneJoinDetail(req, res) {
     try {
       const OID = req.params.OID;
-      const order = "SELECT * FROM orders JOIN order_detail WHERE orders.OID = ?";
+      const order = `
+        SELECT * FROM orders 
+        INNER JOIN order_detail ON orders.OID = order_detail.orders_id
+        INNER JOIN product on order_detail.product_id = product.PID
+        WHERE orders.OID = ?
+      `;
       con.query(order, OID, function (err, result) {
         if (err) return SendError(res, 400, EMessage.NotFound, err);
         return SendSuccess(res, SMessage.selectAll, result);
