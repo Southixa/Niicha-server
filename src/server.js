@@ -1,5 +1,5 @@
 import express from "express"; // ES
-import  "./config/db.js";
+import "./config/db.js";
 import routes from "./router/route.js";
 import fileUpload from "express-fileupload";
 import cors from "cors";
