@@ -8,8 +8,7 @@ export default class OrderController {
   static async getAll(req, res) {
     try {
       const order = `
-      select orders.*, tables.noTable  from orders
-      INNER JOIN tables ON orders.tables_id = tables.TID
+        select orders.*, tables.noTable from orders LEFT JOIN tables ON orders.tables_id = tables.TID
       `;
       con.query(order, function (err, result) {
         if (err) return SendError(res, 400, EMessage.NotFound, err);
@@ -43,7 +42,7 @@ export default class OrderController {
   static async getOne(req, res) {
     try {
       const OID = req.params.OID;
-      const mysql = "select orders.*, tables.noTable from orders INNER JOIN tables ON orders.tables_id = tables.TID  where OID=?";
+      const mysql = "select orders.*, tables.noTable from orders LEFT JOIN tables on orders.tables_id = tables.TID where OID=?";
       con.query(mysql, OID, function (err, result) {
         if (err) return SendError(res, 400, EMessage.NotFound, err);
         return SendSuccess(res, SMessage.selectOne, result[0]);
