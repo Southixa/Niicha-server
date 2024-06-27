@@ -22,6 +22,7 @@ export default class ProductController {
       const mysql = "select * from product where PID=?";
       con.query(mysql, PID, function (err, result) {
         if (err) return SendError(res, 400, EMessage.NotFound, err);
+        if(result.length === 0) return SendSuccess(res, SMessage.selectOne, {});;
         return SendSuccess(res, SMessage.selectOne, result[0]);
       });
     } catch (error) {
