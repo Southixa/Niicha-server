@@ -161,14 +161,15 @@ export default class UserController {
       const UID = req.params.UID;
       const mysql = "Select * from user where UID=?";
 
-      const { username, role } = req.body;
+      const { username, role, password } = req.body;
+      const generatedPassword = await GeneratePassword(password);
       if(Role[role] === undefined){
         return SendError(res, 400, "Role not exist");
       }
       con.query(mysql, UID, function (err, result) {
         if (err) return SendError(res, 400, EMessage.NotFound + " user");
-        const update = "UPDATE user set username =?, role=? WHERE UID =?";
-        con.query(update, [username, role, UID], function (error, result) {
+        const update = "UPDATE user set username =?, role=?, password=? WHERE UID =?";
+        con.query(update, [username, role, generatedPassword, UID], function (error, result) {
           if (error) return SendError(res, 400, "Faild Update User", error);
           return SendSuccess(res, SMessage.updated);
         });

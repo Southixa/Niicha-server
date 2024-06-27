@@ -20,6 +20,7 @@ export default class OrderController {
   static async getOneJoinDetail(req, res) {
     try {
       const OID = req.params.OID;
+      if(!OID) return SendError(res, 400, EMessage.NotFound + " OID");
       const order = `
         SELECT * FROM orders 
         INNER JOIN order_detail ON orders.OID = order_detail.orders_id
