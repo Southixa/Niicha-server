@@ -4,10 +4,10 @@ const con = mysql.createPool({
   connectionLimit: 50,  // Adjust as needed
   waitForConnections: true,
   queueLimit: 0,
-  host: "mysql-176882-0.cloudclusters.net",
-  port: "19673",
+  host: "mysql-177479-0.cloudclusters.net",
+  port: "18574",
   user: "admin",
-  password: "QKKXdMfb",
+  password: "62M8q8nR",
   database: "NiichaDB",
   timezone: 'z'
 });
