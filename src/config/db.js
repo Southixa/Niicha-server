@@ -29,7 +29,10 @@ con.getConnection((err, connection) => {
         console.error('Database connection error:', err);
     }
   }
-  if (connection) connection.release(); // Release the connection if successful
+  if (connection) {
+    console.log('Connected to database!');
+    connection.release(); // Release the connection if successful
+  }
 });
 
 export default con;
